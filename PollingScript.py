@@ -7,7 +7,7 @@ import time
 import datetime
 
 sense = SenseHat()
-server_url = "http://192.168.64.1:3000/data"
+server_url = "http://192.168.1.4:3000/data"
 
 while True:
     # Reading things from SenseHat
