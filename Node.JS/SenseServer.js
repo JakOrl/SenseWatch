@@ -2,6 +2,7 @@
 const express = require('express');
 const mongo = require('mongoose');
 const SensorData = require('./models/sensor_schema');
+const cors = require('cors');
 require('dotenv').config();
 
 // Create an instance of the Express application
@@ -9,6 +10,10 @@ const app = express();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+// website folder serving
+app.use(express.static('public'))
+// allowing cross origin resource sharing,
+app.use(cors());
 
 // Start the server on port 3000
 app.listen(3000, () =>{
@@ -19,6 +24,7 @@ app.listen(3000, () =>{
 mongo.connect(process.env.MONGO_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch((err) => console.log('Connection error:', err))
+
 
 // Endpoint to receive data from the Python script
 app.post('/data', (req, res) => {
@@ -34,3 +40,15 @@ app.post('/data', (req, res) => {
             res.status(500).send('Error saving data');
         });
 });
+
+
+app.get('/api/data', async (req, res) =>{
+    try{
+         const saved_data = await SensorData.find({});
+         res.send(saved_data)
+    } catch (err){
+        console.error('Error retrieving data from MongoDB:', err);
+            res.status(500).send('Error retrieving data');
+    }
+   
+})

@@ -23,7 +23,7 @@ const sensorSchema = new Schema({
     pressure: {
     type: Number,
     required: true,
-    min: [800, "Pressure cannot be this low"],
+    min: [500, "Pressure cannot be this low"],
     max: [1100, "Pressure cannot exceed 1100"]
   }
 });

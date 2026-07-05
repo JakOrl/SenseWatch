@@ -7,12 +7,14 @@ import time
 import datetime
 
 sense = SenseHat()
-server_url = "http://192.168.1.4:3000/data"
+server_url = "http://DESKTOP-MPSR5VJ.local:3000/data"
+# offset of around 6c, due to raspberry pi temp
+temp_offset = 6
 
 while True:
     # Reading things from SenseHat
     humidity = sense.get_humidity()
-    temp = sense.get_temperature()
+    temp = sense.get_temperature() - temp_offset
     pressure = sense.get_pressure()
 
     # Time stamping in UTC for MongoDB later on

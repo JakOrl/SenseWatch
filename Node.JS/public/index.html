@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SenseWatch</title>
+    <!-- Script for using chart.js-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Styling for the site -->
+    <style>
+    h1 {
+        text-align: center;
+    }
+    body {
+        background-color: #1a1a2e;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+    
+    </style>
+
+
+</head>
+<body>
+
+    <h1>SenseWatch Data</h1>
+    <!-- Canvas' for chart.js -->
+    <div style="width: 90%; height: 300px; margin: 40px auto;">
+        <canvas id="tempChart" height="300" ></canvas>
+    </div>
+    <div style="width: 90%; height: 300px; margin: 40px auto;">
+        <canvas id="humidityChart" height="300" ></canvas>
+    </div>
+    <div style="width: 90%; height: 300px; margin: 40px auto;">
+        <canvas id="pressureChart" height="300"></canvas>
+    </div>
+    
+
+    <script>
+        fetch("/api/data")
+        // Pulling info from DB 
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            // parsing into arrays
+            const temperatures = data.map(reading => reading.temperature)
+            const humidities = data.map(reading => reading.humidity)
+            const pressures = data.map(reading => reading.pressure)
+            const timestamps = data.map(reading => reading.timestamp.substring(11, 16))
+
+            // graphs for site
+            // Temperature chart
+            new Chart(document.getElementById('tempChart'), {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: 'Temperature (°C)',
+                        data: temperatures 
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false
+                }
+            })
+
+            // Pressure Chart
+            new Chart(document.getElementById('pressureChart'), {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: 'Pressure (hPa)',
+                        data: pressures 
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false
+                }
+            })
+        
+            // Humidity Chart
+            new Chart(document.getElementById('humidityChart'), {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: 'Humidity (%)',
+                        data: humidities 
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false
+                }
+            })
+
+
+        })
+        //error catching 
+        .catch((err) => console.log('Retrieval Error:', err))
+    </script>
+</body>
+</html>
